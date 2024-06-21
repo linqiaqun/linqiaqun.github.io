@@ -3,26 +3,26 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Qt6开发离线音乐播放器（一）：基本窗口 | Lin Qiaqun&#39;s blog | Welcome to my blog</title>
+  <title>Qt6开发跨平台音乐播放器（一）：基本窗口 | Lin Qiaqun&#39;s blog | Welcome to my blog</title>
 
   
   <meta name="author" content="Lin Qiaqun">
   
 
   
-  <meta name="description" content="Qt6开发离线音乐播放器教程">
+  <meta name="description" content="Qt6开发跨平台音乐播放器教程">
   
 
   
   
-  <meta name="keywords" content="Qt6,离线音乐播放器，QMultiMedia">
+  <meta name="keywords" content="Qt6,跨平台,音乐播放器,QMultiMedia">
   
 
   <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-  <meta property="og:title" content="Qt6开发离线音乐播放器（一）：基本窗口"/>
+  <meta property="og:title" content="Qt6开发跨平台音乐播放器（一）：基本窗口"/>
 
   <meta property="og:site_name" content="Lin Qiaqun&#39;s blog"/>
 
@@ -59,13 +59,13 @@
 
   
     
-    <h3 class="article-title"><span>Qt6开发离线音乐播放器（一）：基本窗口</span></h3>
+    <h3 class="article-title"><span>Qt6开发跨平台音乐播放器（一）：基本窗口</span></h3>
     
   
 
   <div class="article-top-meta">
     <span class="posted-on">
-      <a href="/2024/06/17/Qt6开发离线音乐播放器/Qt6开发离线播放器（一）/" rel="bookmark">
+      <a href="/2024/06/17/Qt6开发跨平台音乐播放器/Qt6开发跨平台音乐播放器（一）/" rel="bookmark">
         <time class="entry-date published" datetime="2024-06-17T09:38:39.518Z">
           2024-06-17
         </time>
@@ -130,7 +130,7 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">MainWindow::<span class="built_in">MainWindow</span>(QWidget *parent) : <span class="built_in">BaseWidget</span>(parent), <span class="built_in">ui</span>(<span class="keyword">new</span> Ui::MainWindow) &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="built_in">connect</span>(ui-&gt;maxBtn, &amp;QPushButton::clicked, <span class="keyword">this</span>, &amp;MainWindow::showMaximized);</span><br><span class="line">    <span class="built_in">connect</span>(ui-&gt;restoreBtn, &amp;QPushButton::clicked, <span class="keyword">this</span>, &amp;MainWindow::showNormal);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">MainWindow::resizeEvent</span><span class="params">(QResizeEvent *ev)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">Q_UNUSED</span>(ev)</span><br><span class="line">    ui-&gt;maxBtn-&gt;<span class="built_in">setHidden</span>(<span class="built_in">isMaximized</span>());</span><br><span class="line">    ui-&gt;restoreBtn-&gt;<span class="built_in">setHidden</span>(!<span class="built_in">isMaximized</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>另外最大化时，窗口阴影一般要关闭，也可以在这里处理。</p>
-<h3 id="2-4-可拖动"><a href="#2-4-可拖动" class="headerlink" title="2.4 可拖动"></a>2.4 可拖动</h3><p>安装窗口拖动这个需求可以通过mousePressEvent、mouseMoveEvent和mouseReleaseEvent这三个重载函数实现：</p>
+<h3 id="2-4-可拖动"><a href="#2-4-可拖动" class="headerlink" title="2.4 可拖动"></a>2.4 可拖动</h3><p>按住窗口拖动这个需求可以通过mousePressEvent、mouseMoveEvent和mouseReleaseEvent这三个重载函数实现：</p>
 <ul>
 <li><p>定义一个QPoint类型成员变量m_pos，在鼠标按下时（mousePressEvent）记录点击坐标，并设置按下状态为true</p>
 </li>
@@ -141,8 +141,6 @@
 </ul>
 <p>这一部分比较通用，我们写在BaseWidget里：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// basewidget.h</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BaseWidget</span> : <span class="keyword">public</span> QWidget &#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">BaseWidget</span><span class="params">(QWidget *parent = <span class="literal">nullptr</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">mousePressEvent</span><span class="params">(QMouseEvent *ev)</span> <span class="keyword">override</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">mouseMoveEvent</span><span class="params">(QMouseEvent *ev)</span> <span class="keyword">override</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">mouseReleaseEvent</span><span class="params">(QMouseEvent *ev)</span> <span class="keyword">override</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    QPoint m_pos;</span><br><span class="line">    <span class="type">bool</span> m_pressed = <span class="literal">false</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// basewidget.cpp</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">BaseWidget::mousePressEvent</span><span class="params">(QMouseEvent* ev)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ((Qt::LeftButton == ev-&gt;<span class="built_in">button</span>()) &amp;&amp; (!<span class="built_in">isMaximized</span>())) &#123;</span><br><span class="line">        m_pressed = <span class="literal">true</span>;</span><br><span class="line">        m_pos = ev-&gt;<span class="built_in">pos</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    QWidget::<span class="built_in">mousePressEvent</span>(ev);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">BaseWidget::mouseMoveEvent</span><span class="params">(QMouseEvent* ev)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_pressed) &#123;</span><br><span class="line">        <span class="built_in">move</span>(ev-&gt;<span class="built_in">pos</span>() - m_pos + <span class="built_in">pos</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    QWidget::<span class="built_in">mouseMoveEvent</span>(ev);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">BaseWidget::mouseReleaseEvent</span><span class="params">(QMouseEvent* ev)</span> </span>&#123;</span><br><span class="line">    m_pressed = <span class="literal">false</span>;</span><br><span class="line">    QWidget::<span class="built_in">mouseReleaseEvent</span>(ev);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
 
 <hr>
 <p>PS: 代码已经开源在github：<a target="_blank" rel="noopener" href="https://github.com/linqiaqun/music-player">linqiaqun&#x2F;music-player: A cross platform music player (github.com)</a> 欢迎star&#x2F;fork&#x2F;issue</p>
@@ -162,7 +160,7 @@
 
     <span class="post-tags">
       <i class="icon-tags"></i>
-        <a href="/tags/Qt6/">Qt6</a><a href="/tags/离线音乐播放器，QMultiMedia/">离线音乐播放器，QMultiMedia</a>
+        <a href="/tags/Qt6/">Qt6</a><a href="/tags/跨平台/">跨平台</a><a href="/tags/音乐播放器/">音乐播放器</a><a href="/tags/QMultiMedia/">QMultiMedia</a>
     </span>
     
 

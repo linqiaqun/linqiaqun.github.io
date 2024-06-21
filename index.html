@@ -55,13 +55,107 @@
 
   
     
-    <h3 class="article-title"><a href="/2024/06/17/Qt6开发离线音乐播放器/Qt6开发离线播放器（一）/"><span>Qt6开发离线音乐播放器（一）：基本窗口</span></a></h3>
+    <h3 class="article-title"><a href="/2024/06/20/Qt6开发跨平台音乐播放器/Qt6开发跨平台音乐播放器（二）：Player/"><span>Qt6开发跨平台音乐播放器（二）：Player</span></a></h3>
     
   
 
   <div class="article-top-meta">
     <span class="posted-on">
-      <a href="/2024/06/17/Qt6开发离线音乐播放器/Qt6开发离线播放器（一）/" rel="bookmark">
+      <a href="/2024/06/20/Qt6开发跨平台音乐播放器/Qt6开发跨平台音乐播放器（二）：Player/" rel="bookmark">
+        <time class="entry-date published" datetime="2024-06-20T03:06:04.624Z">
+          2024-06-20
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="1-目标"><a href="#1-目标" class="headerlink" title="1. 目标"></a>1. 目标</h2><p>这一节我们来写一个功能完备的Player类，实现以下功能：</p>
+<ul>
+<li><p>播放控制（播放&#x2F;暂停）</p>
+</li>
+<li><p>音量控制</p>
+</li>
+<li><p>播放顺序控制</p>
+</li>
+<li><p>播放进度控制</p>
+</li>
+</ul>
+<h2 id="2-实现"><a href="#2-实现" class="headerlink" title="2. 实现"></a>2. 实现</h2><p>实现播放功能可以用libVlc、ffmpeg和QMediaPlayer这几种方案，但libVlc和ffmpeg都太重了，我们的需求只是简单的播放音乐，所以当前选择QMediaPlayer。</p>
+<p>创建一个player模块，包含一个继承QObject的Player类：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">player</span><br><span class="line">    - player.pri</span><br><span class="line">    - player.h</span><br><span class="line">    - player.cpp</span><br></pre></td></tr></table></figure>
+
+<p>在player.pri中添加multimedia模块：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">QT += multimedia</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-播放控制"><a href="#2-1-播放控制" class="headerlink" title="2.1 播放控制"></a>2.1 播放控制</h3><p>创建一个QMediaPlayer对象：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// player.h</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">QMediaPlayer</span>;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Player</span> : <span class="keyword">public</span> QObject &#123;</span><br><span class="line">...</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    QMediaPlayer *m_player = <span class="literal">nullptr</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// player.cpp</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;player.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QMediaPlayer&gt;</span></span></span><br><span class="line"></span><br><span class="line">Player::<span class="built_in">Player</span>(QObject *parent) : QObject&#123;parent&#125; &#123;</span><br><span class="line">    m_player = <span class="keyword">new</span> <span class="built_in">QMediaPlayer</span>(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后创建三个public的槽函数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Player::play</span><span class="params">(<span class="type">const</span> QString &amp;path)</span> </span>&#123;</span><br><span class="line">    m_player-&gt;<span class="built_in">setSource</span>(<span class="built_in">QUrl</span>(path));</span><br><span class="line">    m_player-&gt;<span class="built_in">play</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Player::pause</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    m_player-&gt;<span class="built_in">pause</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Player::stop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    m_player-&gt;<span class="built_in">stop</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-音量控制"><a href="#2-2-音量控制" class="headerlink" title="2.2 音量控制"></a>2.2 音量控制</h3><p>QMediaPlayer包含了默认的播放设备，用audioOutput函数返回一个QAudioOutput对象指针，该对象即可控制播发音量：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置音量</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Player::setVolume</span><span class="params">(<span class="type">float</span> vol)</span> </span>&#123;</span><br><span class="line">    QAudioOutput *device = m_player-&gt;<span class="built_in">audioOutput</span>();</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">nullptr</span> != device) device-&gt;<span class="built_in">setVolume</span>(vol);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置静音</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Player::setMuted</span><span class="params">(<span class="type">bool</span> muted)</span> </span>&#123;</span><br><span class="line">    QAudioOutput *device = m_player-&gt;<span class="built_in">audioOutput</span>();</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">nullptr</span> != device) device-&gt;<span class="built_in">setMuted</span>(muted);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也可以先设置播放设备，然后利用该设备来控制音量：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Player::<span class="built_in">Player</span>(QObject *parent) : QObject&#123;parent&#125; &#123;</span><br><span class="line">    m_output = <span class="keyword">new</span> <span class="built_in">QAudioOutput</span>(<span class="keyword">this</span>);</span><br><span class="line">    m_player = <span class="keyword">new</span> <span class="built_in">QMediaPlayer</span>(<span class="keyword">this</span>);</span><br><span class="line">    m_player-&gt;<span class="built_in">setAudioOutput</span>(m_output);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-播放顺序控制"><a href="#2-3-播放顺序控制" class="headerlink" title="2.3 播放顺序控制"></a>2.3 播放顺序控制</h3><p>Qt6取消了QMediaPlaylist类，只在example代码中保留，所以播放顺序控制需要自己写Playlist类，或者从qt example代码中迁移QMediaPlaylist类，这里我们选择自定义Playlist类。</p>
+<p>在player模块中添加一个Playlist类：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">player</span><br><span class="line">    - player.pri</span><br><span class="line">    - player.h</span><br><span class="line">    - player.cpp</span><br><span class="line">    - playlist.h</span><br><span class="line">    - playlist.cpp</span><br></pre></td></tr></table></figure>
+
+<p>主要提供以下几类接口：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 歌曲管理接口</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">setSongList</span><span class="params">(<span class="type">const</span> QVariantList &amp;songList)</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">appendSong</span><span class="params">(<span class="type">const</span> QVariantMap &amp;song)</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">insertSong</span><span class="params">(<span class="type">int</span> pos, <span class="type">const</span> QVariantMap &amp;song)</span></span>;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">removeSong</span><span class="params">(<span class="type">int</span> pos)</span></span>;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">clear</span><span class="params">()</span></span>;<span class="function"><span class="type">bool</span> <span class="title">isEmpty</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置播放模式</span></span><br><span class="line"><span class="keyword">enum</span> <span class="title class_">PLAYBACK_MODE</span> &#123; ONCE = <span class="number">0</span>, IN_LOOP, SEQUENTIAL, LOOP, RANDDOM, PM_UNKNOWN = <span class="number">5</span> &#125;;</span><br><span class="line"><span class="function">PLAYBACK_MODE <span class="title">playbackMode</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">setPlaybackMode</span><span class="params">(PLAYBACK_MODE mode)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 播放顺序</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">currentIndex</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">nextIndex</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">previousIndex</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function">QVariantMap <span class="title">currentSong</span><span class="params">()</span> <span class="type">const</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-播放进度控制"><a href="#2-4-播放进度控制" class="headerlink" title="2.4 播放进度控制"></a>2.4 播放进度控制</h3><p>这个比较简单：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// player.h</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Player</span> : <span class="keyword">public</span> QObject &#123;</span><br><span class="line">...</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setPosition</span><span class="params">(qint64)</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// player.cpp</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Player::setPosition</span><span class="params">(qint64 pos)</span> </span>&#123;</span><br><span class="line">    m_player-&gt;<span class="built_in">setPosition</span>(pos);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>PS: 代码已经开源在github：<a target="_blank" rel="noopener" href="https://github.com/linqiaqun/music-player">linqiaqun&#x2F;music-player: A cross platform music player (github.com)</a> 欢迎star&#x2F;fork&#x2F;issue</p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Qt6/">Qt6</a><a href="/tags/跨平台/">跨平台</a><a href="/tags/音乐播放器/">音乐播放器</a><a href="/tags/QMultiMedia/">QMultiMedia</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2024/06/17/Qt6开发跨平台音乐播放器/Qt6开发跨平台音乐播放器（一）/"><span>Qt6开发跨平台音乐播放器（一）：基本窗口</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2024/06/17/Qt6开发跨平台音乐播放器/Qt6开发跨平台音乐播放器（一）/" rel="bookmark">
         <time class="entry-date published" datetime="2024-06-17T09:38:39.518Z">
           2024-06-17
         </time>
@@ -126,7 +220,7 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">MainWindow::<span class="built_in">MainWindow</span>(QWidget *parent) : <span class="built_in">BaseWidget</span>(parent), <span class="built_in">ui</span>(<span class="keyword">new</span> Ui::MainWindow) &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="built_in">connect</span>(ui-&gt;maxBtn, &amp;QPushButton::clicked, <span class="keyword">this</span>, &amp;MainWindow::showMaximized);</span><br><span class="line">    <span class="built_in">connect</span>(ui-&gt;restoreBtn, &amp;QPushButton::clicked, <span class="keyword">this</span>, &amp;MainWindow::showNormal);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">MainWindow::resizeEvent</span><span class="params">(QResizeEvent *ev)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">Q_UNUSED</span>(ev)</span><br><span class="line">    ui-&gt;maxBtn-&gt;<span class="built_in">setHidden</span>(<span class="built_in">isMaximized</span>());</span><br><span class="line">    ui-&gt;restoreBtn-&gt;<span class="built_in">setHidden</span>(!<span class="built_in">isMaximized</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>另外最大化时，窗口阴影一般要关闭，也可以在这里处理。</p>
-<h3 id="2-4-可拖动"><a href="#2-4-可拖动" class="headerlink" title="2.4 可拖动"></a>2.4 可拖动</h3><p>安装窗口拖动这个需求可以通过mousePressEvent、mouseMoveEvent和mouseReleaseEvent这三个重载函数实现：</p>
+<h3 id="2-4-可拖动"><a href="#2-4-可拖动" class="headerlink" title="2.4 可拖动"></a>2.4 可拖动</h3><p>按住窗口拖动这个需求可以通过mousePressEvent、mouseMoveEvent和mouseReleaseEvent这三个重载函数实现：</p>
 <ul>
 <li><p>定义一个QPoint类型成员变量m_pos，在鼠标按下时（mousePressEvent）记录点击坐标，并设置按下状态为true</p>
 </li>
@@ -137,8 +231,6 @@
 </ul>
 <p>这一部分比较通用，我们写在BaseWidget里：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// basewidget.h</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BaseWidget</span> : <span class="keyword">public</span> QWidget &#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">BaseWidget</span><span class="params">(QWidget *parent = <span class="literal">nullptr</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">mousePressEvent</span><span class="params">(QMouseEvent *ev)</span> <span class="keyword">override</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">mouseMoveEvent</span><span class="params">(QMouseEvent *ev)</span> <span class="keyword">override</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">mouseReleaseEvent</span><span class="params">(QMouseEvent *ev)</span> <span class="keyword">override</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    QPoint m_pos;</span><br><span class="line">    <span class="type">bool</span> m_pressed = <span class="literal">false</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// basewidget.cpp</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">BaseWidget::mousePressEvent</span><span class="params">(QMouseEvent* ev)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ((Qt::LeftButton == ev-&gt;<span class="built_in">button</span>()) &amp;&amp; (!<span class="built_in">isMaximized</span>())) &#123;</span><br><span class="line">        m_pressed = <span class="literal">true</span>;</span><br><span class="line">        m_pos = ev-&gt;<span class="built_in">pos</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    QWidget::<span class="built_in">mousePressEvent</span>(ev);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">BaseWidget::mouseMoveEvent</span><span class="params">(QMouseEvent* ev)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_pressed) &#123;</span><br><span class="line">        <span class="built_in">move</span>(ev-&gt;<span class="built_in">pos</span>() - m_pos + <span class="built_in">pos</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    QWidget::<span class="built_in">mouseMoveEvent</span>(ev);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">BaseWidget::mouseReleaseEvent</span><span class="params">(QMouseEvent* ev)</span> </span>&#123;</span><br><span class="line">    m_pressed = <span class="literal">false</span>;</span><br><span class="line">    QWidget::<span class="built_in">mouseReleaseEvent</span>(ev);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
 
 <hr>
 <p>PS: 代码已经开源在github：<a target="_blank" rel="noopener" href="https://github.com/linqiaqun/music-player">linqiaqun&#x2F;music-player: A cross platform music player (github.com)</a> 欢迎star&#x2F;fork&#x2F;issue</p>
@@ -158,7 +250,7 @@
 
     <span class="post-tags">
       <i class="icon-tags"></i>
-        <a href="/tags/Qt6/">Qt6</a><a href="/tags/离线音乐播放器，QMultiMedia/">离线音乐播放器，QMultiMedia</a>
+        <a href="/tags/Qt6/">Qt6</a><a href="/tags/跨平台/">跨平台</a><a href="/tags/音乐播放器/">音乐播放器</a><a href="/tags/QMultiMedia/">QMultiMedia</a>
     </span>
     
 
