@@ -1,464 +1,515 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="zh">
 <head>
-  <meta charset="utf-8">
-  
-  <title>Lin Qiaqun&#39;s blog | Welcome to my blog</title>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
 
-  
-  <meta name="author" content="Lin Qiaqun">
-  
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-  
-
-  
-
-  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
-  
-
-  <meta property="og:site_name" content="Lin Qiaqun&#39;s blog"/>
-
-  
-  <meta property="og:image" content="/favicon.ico"/>
-  
-
-  <link href="/favicon.ico" rel="icon">
-  <link rel="alternate" href="/atom.xml" title="Lin Qiaqun&#39;s blog" type="application/atom+xml">
-  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-<meta name="generator" content="Hexo 7.2.0"></head>
+<link rel="stylesheet" href="/css/main.css">
 
 
-<body>
-<div class="blog">
-  <div class="content">
 
-    <header>
-  <div class="site-branding">
-    <h1 class="site-title">
-      <a href="/">Lin Qiaqun&#39;s blog</a>
-    </h1>
-    <p class="site-description">Welcome to my blog</p>
-  </div>
-  <nav class="site-navigation">
-    <ul>
-      
-    </ul>
-  </nav>
-</header>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-    <main class="site-main posts-loop">
-    
-  <article>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"linqiaqun.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-  
-    
-    <h3 class="article-title"><a href="/2024/06/24/Qt6开发跨平台音乐播放器/Qt6开发跨平台音乐播放器（二）/"><span>Qt6开发跨平台音乐播放器（二）：单例模式</span></a></h3>
-    
+    <meta property="og:type" content="website">
+<meta property="og:title" content="Lin Qiaqun&#39;s blog">
+<meta property="og:url" content="https://linqiaqun.github.io/index.html">
+<meta property="og:site_name" content="Lin Qiaqun&#39;s blog">
+<meta property="og:locale">
+<meta property="article:author" content="Lin Qiaqun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://linqiaqun.github.io/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"zh","comments":"","permalink":"","path":"index.html","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Lin Qiaqun's blog</title>
   
 
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2024/06/24/Qt6开发跨平台音乐播放器/Qt6开发跨平台音乐播放器（二）/" rel="bookmark">
-        <time class="entry-date published" datetime="2024-06-24T06:43:00.677Z">
-          2024-06-24
-        </time>
-      </a>
-    </span>
-  </div>
 
 
-  
 
-  <div class="article-content">
-    <div class="entry">
-      
-        <h2 id="1-C-实现方案"><a href="#1-C-实现方案" class="headerlink" title="1. C++实现方案"></a>1. C++实现方案</h2><p>开发客户端程序少不了要用到单例模式（Singleton Pattern），核心就是创建一个全局唯一的实例，根据创建实例的时机，可以分类成：</p>
-<ul>
-<li><p>饿汉式 - 程序启动就创建实例</p>
-</li>
-<li><p>懒汉式 - 调用时再创建实例</p>
-</li>
-</ul>
-<p>在C++11之前，为了实现线程安全，兼顾性能效率，又衍生出了懒汉式+双检测锁这种实现。</p>
-<p>而C++11之后，引入了std::call_once特性，确保函数在多线程并发情况下，只执行一次，完美地替换双检测锁：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;memory&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">static</span> Singleton &amp;<span class="title">instance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="type">static</span> std::once_flag flag;</span><br><span class="line">        std::<span class="built_in">call_once</span>(flag, [&amp;]() &#123;</span><br><span class="line">            obj.<span class="built_in">reset</span>(<span class="keyword">new</span> Singleton);</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">return</span> *obj;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">static</span> std::unique_ptr&lt;Singleton&gt; obj;</span><br><span class="line">    <span class="built_in">Singleton</span>() = defaut;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>另外，C++11还引入了线程安全的局部静态变量，单例的实现方式更为简单：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">static</span> Singleton &amp;<span class="title">instance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="type">static</span> Singleton obj;</span><br><span class="line">        <span class="keyword">return</span> obj;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">Singleton</span>() = defaut;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="2-Qt实现方案"><a href="#2-Qt实现方案" class="headerlink" title="2. Qt实现方案"></a>2. Qt实现方案</h2><p>除了上述的C++实现方案，Qt还提供了一个Q_GLOBAL_STATIC宏来实现线程安全的单例，具体描述可以参考Qt文档：<a target="_blank" rel="noopener" href="https://doc.qt.io/qt-6/qglobalstatic.html">QGlobalStatic Struct | Qt Core 6.7.2</a></p>
-<p>使用方式如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// singleton.h</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Singleton</span>();</span><br><span class="line">    ~<span class="built_in">Singleton</span>();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">static</span> Singleton* <span class="title">instance</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// singleton.cpp</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;singleton.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QGlobalStatic&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Q_GLOBAL_STATIC</span>(Singleton, singleton)</span><br><span class="line"></span><br><span class="line"><span class="function">Singleton* <span class="title">Singleton::instance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">singleton</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>使用Q_GLOBAL_STATIC要求类的构造和析构函数为public，这样就无法防止构造新的实例，在使用时需要注意这一点。</p>
-<hr>
-<p>PS: 代码已经开源在github：<a target="_blank" rel="noopener" href="https://github.com/linqiaqun/music-player">linqiaqun&#x2F;music-player: A cross platform music player (github.com)</a> 欢迎star&#x2F;fork&#x2F;issue</p>
 
-      
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
     </div>
-
   </div>
 
-  <div class="article-footer">
-    <div class="article-meta pull-left">
+  <div class="site-meta">
 
-    
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Lin Qiaqun's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Welcome to my blog</p>
+  </div>
 
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/Qt6/">Qt6</a><a href="/tags/跨平台/">跨平台</a><a href="/tags/音乐播放器/">音乐播放器</a><a href="/tags/QMultiMedia/">QMultiMedia</a>
-    </span>
-    
-
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
     </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2024/06/20/Qt6开发跨平台音乐播放器/Qt6开发跨平台音乐播放器（三）/"><span>Qt6开发跨平台音乐播放器（三）：Player</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2024/06/20/Qt6开发跨平台音乐播放器/Qt6开发跨平台音乐播放器（三）/" rel="bookmark">
-        <time class="entry-date published" datetime="2024-06-20T03:06:04.624Z">
-          2024-06-20
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <h2 id="1-目标"><a href="#1-目标" class="headerlink" title="1. 目标"></a>1. 目标</h2><p>这一节我们来写一个功能完备的Player类，实现以下功能：</p>
-<ul>
-<li><p>播放控制（播放&#x2F;暂停）</p>
-</li>
-<li><p>音量控制</p>
-</li>
-<li><p>播放顺序控制</p>
-</li>
-<li><p>播放进度控制</p>
-</li>
-</ul>
-<h2 id="2-实现"><a href="#2-实现" class="headerlink" title="2. 实现"></a>2. 实现</h2><p>实现播放功能可以用libVlc、ffmpeg和QMediaPlayer这几种方案，但libVlc和ffmpeg都太重了，我们的需求只是简单的播放音乐，所以当前选择QMediaPlayer。</p>
-<p>创建一个player模块，包含一个继承QObject的Player类：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">player</span><br><span class="line">    - player.pri</span><br><span class="line">    - player.h</span><br><span class="line">    - player.cpp</span><br></pre></td></tr></table></figure>
-
-<p>在player.pri中添加multimedia模块：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">QT += multimedia</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-1-播放控制"><a href="#2-1-播放控制" class="headerlink" title="2.1 播放控制"></a>2.1 播放控制</h3><p>创建一个QMediaPlayer对象：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// player.h</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">QMediaPlayer</span>;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Player</span> : <span class="keyword">public</span> QObject &#123;</span><br><span class="line">...</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    QMediaPlayer *m_player = <span class="literal">nullptr</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// player.cpp</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;player.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QMediaPlayer&gt;</span></span></span><br><span class="line"></span><br><span class="line">Player::<span class="built_in">Player</span>(QObject *parent) : QObject&#123;parent&#125; &#123;</span><br><span class="line">    m_player = <span class="keyword">new</span> <span class="built_in">QMediaPlayer</span>(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后创建三个public的槽函数：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Player::play</span><span class="params">(<span class="type">const</span> QString &amp;path)</span> </span>&#123;</span><br><span class="line">    m_player-&gt;<span class="built_in">setSource</span>(<span class="built_in">QUrl</span>(path));</span><br><span class="line">    m_player-&gt;<span class="built_in">play</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Player::pause</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    m_player-&gt;<span class="built_in">pause</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Player::stop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    m_player-&gt;<span class="built_in">stop</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-2-音量控制"><a href="#2-2-音量控制" class="headerlink" title="2.2 音量控制"></a>2.2 音量控制</h3><p>QMediaPlayer包含了默认的播放设备，用audioOutput函数返回一个QAudioOutput对象指针，该对象即可控制播放音量：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置音量</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Player::setVolume</span><span class="params">(<span class="type">float</span> vol)</span> </span>&#123;</span><br><span class="line">    QAudioOutput *device = m_player-&gt;<span class="built_in">audioOutput</span>();</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">nullptr</span> != device) device-&gt;<span class="built_in">setVolume</span>(vol);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置静音</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Player::setMuted</span><span class="params">(<span class="type">bool</span> muted)</span> </span>&#123;</span><br><span class="line">    QAudioOutput *device = m_player-&gt;<span class="built_in">audioOutput</span>();</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">nullptr</span> != device) device-&gt;<span class="built_in">setMuted</span>(muted);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>也可以先设置播放设备，然后利用该设备来控制音量：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Player::<span class="built_in">Player</span>(QObject *parent) : QObject&#123;parent&#125; &#123;</span><br><span class="line">    m_output = <span class="keyword">new</span> <span class="built_in">QAudioOutput</span>(<span class="keyword">this</span>);</span><br><span class="line">    m_player = <span class="keyword">new</span> <span class="built_in">QMediaPlayer</span>(<span class="keyword">this</span>);</span><br><span class="line">    m_player-&gt;<span class="built_in">setAudioOutput</span>(m_output);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-3-播放顺序控制"><a href="#2-3-播放顺序控制" class="headerlink" title="2.3 播放顺序控制"></a>2.3 播放顺序控制</h3><p>Qt6取消了QMediaPlaylist类，只在example代码中保留，所以播放顺序控制需要自己写Playlist类，或者从qt example代码中迁移QMediaPlaylist类，这里我们选择自定义Playlist类。</p>
-<p>在player模块中添加一个Playlist类：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">player</span><br><span class="line">    - player.pri</span><br><span class="line">    - player.h</span><br><span class="line">    - player.cpp</span><br><span class="line">    - playlist.h</span><br><span class="line">    - playlist.cpp</span><br></pre></td></tr></table></figure>
-
-<p>主要提供以下几类接口：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 歌曲管理接口</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">setSongList</span><span class="params">(<span class="type">const</span> QVariantList &amp;songList)</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">appendSong</span><span class="params">(<span class="type">const</span> QVariantMap &amp;song)</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">insertSong</span><span class="params">(<span class="type">int</span> index, <span class="type">const</span> QVariantMap &amp;song)</span></span>;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">removeSong</span><span class="params">(<span class="type">int</span> index)</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">clear</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">isEmpty</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 播放模式</span></span><br><span class="line"><span class="function">PLAYBACK_MODE <span class="title">playbackMode</span><span class="params">()</span> <span class="type">const</span> </span>&#123; <span class="keyword">return</span> m_mode; &#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">setPlaybackMode</span><span class="params">(PLAYBACK_MODE mode)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 播放顺序管理</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">setCurrentIndex</span><span class="params">(<span class="type">int</span> index)</span></span>;</span><br><span class="line"><span class="function">QString <span class="title">songAt</span><span class="params">(<span class="type">int</span> index)</span></span>;</span><br><span class="line"><span class="function">QString <span class="title">currentSong</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function">QString <span class="title">previousSong</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function">QString <span class="title">nextSong</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-4-播放进度控制"><a href="#2-4-播放进度控制" class="headerlink" title="2.4 播放进度控制"></a>2.4 播放进度控制</h3><p>这个比较简单：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// player.h</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Player</span> : <span class="keyword">public</span> QObject &#123;</span><br><span class="line">...</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setPosition</span><span class="params">(qint64)</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// player.cpp</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Player::setPosition</span><span class="params">(qint64 pos)</span> </span>&#123;</span><br><span class="line">    m_player-&gt;<span class="built_in">setPosition</span>(pos);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<p>PS: 代码已经开源在github：<a target="_blank" rel="noopener" href="https://github.com/linqiaqun/music-player">linqiaqun&#x2F;music-player: A cross platform music player (github.com)</a> 欢迎star&#x2F;fork&#x2F;issue</p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/Qt6/">Qt6</a><a href="/tags/跨平台/">跨平台</a><a href="/tags/音乐播放器/">音乐播放器</a><a href="/tags/QMultiMedia/">QMultiMedia</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2024/06/17/Qt6开发跨平台音乐播放器/Qt6开发跨平台音乐播放器（一）/"><span>Qt6开发跨平台音乐播放器（一）：基本窗口</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2024/06/17/Qt6开发跨平台音乐播放器/Qt6开发跨平台音乐播放器（一）/" rel="bookmark">
-        <time class="entry-date published" datetime="2024-06-17T09:38:39.518Z">
-          2024-06-17
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <h2 id="1-目标"><a href="#1-目标" class="headerlink" title="1. 目标"></a>1. 目标</h2><p>我们目标是做一个在各个平台上样式高度统一的软件，所以最好的选择是自定义一个基本窗口（QWidget），去掉平台附加的平台样式（边框、按钮等），最后的成品需要具备以下特性：</p>
-<ul>
-<li><p>无边框</p>
-</li>
-<li><p>窗口阴影</p>
-</li>
-<li><p>自定义标题栏</p>
-</li>
-<li><p>可拖动</p>
-</li>
-</ul>
-<h2 id="2-实现"><a href="#2-实现" class="headerlink" title="2. 实现"></a>2. 实现</h2><p>创建一个basewidget模块，包含一个继承QWidget的BaseWidget类：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">basewidget</span><br><span class="line">    - basewidget.pri</span><br><span class="line">    - basewidget.h</span><br><span class="line">    - basewidget.cpp</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-1-无边框"><a href="#2-1-无边框" class="headerlink" title="2.1 无边框"></a>2.1 无边框</h3><p>这个实现比较简单，在构造函数设置windowFlag就行</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BaseWidget::<span class="built_in">BaseWidget</span>(QWidget *parent) : QWidget&#123;parent&#125; &#123;</span><br><span class="line">    <span class="built_in">setWindowFlags</span>(Qt::FramelessWindowHint);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-2-窗口阴影"><a href="#2-2-窗口阴影" class="headerlink" title="2.2 窗口阴影"></a>2.2 窗口阴影</h3><p>所有的无边框的窗口阴影实现方案都需要将最下面的widget背景透明：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">setAttribute</span>(Qt::WA_TranslucentBackground);</span><br></pre></td></tr></table></figure>
-
-<p>有些方案需要预留出绘制阴影的margin（比如预留8px）：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">setContentsMargins</span>(<span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>, <span class="number">8</span>);</span><br></pre></td></tr></table></figure>
-
-<p>之后绘制阴影有以下几种方法：</p>
-<ul>
-<li><p>预留margin，在paintEvent中用贴图的方式绘制四周阴影（需要一张渐变png）</p>
-</li>
-<li><p>预留margin，在paintEvent或qss中用渐变色绘制阴影</p>
-</li>
-<li><p>无需预留margin，使用QGraphicsDropShadowEffect设置阴影</p>
-</li>
-</ul>
-<p>这里我们采用第三种方案（因为足够简单）。</p>
-<p>首先添加一个带ui文件的QWidget类（Qt 设计器界面类），继承BaseWidget类：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> once</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;basewidget/basewidget.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">QT_BEGIN_NAMESPACE</span><br><span class="line"><span class="keyword">namespace</span> Ui &#123;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MainWindow</span>;</span><br><span class="line">&#125;</span><br><span class="line">QT_END_NAMESPACE</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MainWindow</span> : <span class="keyword">public</span> BaseWidget &#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">MainWindow</span>(QWidget *parent = <span class="literal">nullptr</span>);</span><br><span class="line">    ~<span class="built_in">MainWindow</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    Ui::MainWindow *ui;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>在ui上添加一个QFrame，叫做container吧，设置布局，留出margin：</p>
-<p><img src="https://raw.githubusercontent.com/linqiaqun/images/main/202406192357034.png"></p>
-<p>然后设置阴影：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">MainWindow::<span class="built_in">MainWindow</span>(QWidget *parent) : <span class="built_in">BaseWidget</span>(parent), <span class="built_in">ui</span>(<span class="keyword">new</span> Ui::MainWindow) &#123;</span><br><span class="line">    ui-&gt;<span class="built_in">setupUi</span>(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">    QGraphicsDropShadowEffect *shadow = <span class="keyword">new</span> <span class="built_in">QGraphicsDropShadowEffect</span>(<span class="keyword">this</span>);</span><br><span class="line">    shadow-&gt;<span class="built_in">setOffset</span>(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    shadow-&gt;<span class="built_in">setColor</span>(Qt::gray);</span><br><span class="line">    shadow-&gt;<span class="built_in">setBlurRadius</span>(<span class="number">32</span>);</span><br><span class="line">    ui-&gt;container-&gt;<span class="built_in">setGraphicsEffect</span>(shadow);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>阴影效果就出来了：</p>
-<p><img src="https://raw.githubusercontent.com/linqiaqun/images/main/202406200001062.png"></p>
-<p>在部分linux发行版上，透明效果可能会被系统关闭（比如统信上可以关闭“窗口特效”），此时只能去除阴影效果。</p>
-<h3 id="2-3-自定义标题栏"><a href="#2-3-自定义标题栏" class="headerlink" title="2.3 自定义标题栏"></a>2.3 自定义标题栏</h3><p>一般标题栏就是左侧logo图片+title，右侧最小化&#x2F;最大化&#x2F;还原&#x2F;关闭按钮，按需添加即可。这里有一个需要注意的事项，当窗口在最大化&#x2F;非最大化之间切换时，最大化&#x2F;还原按钮需要进行切换，可以在最大化&#x2F;还原按钮的点击槽函数中进行判断处理，但是稍显麻烦，比如：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">MainWindow::maxBtnClicked</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">showMaximized</span>();</span><br><span class="line">    ui-&gt;maxBtn-&gt;<span class="built_in">hide</span>();</span><br><span class="line">    ui-&gt;restoreBtn-&gt;<span class="built_in">show</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">MainWindow::restoreBtnClicked</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">showNormal</span>();</span><br><span class="line">    ui-&gt;maxBtn-&gt;<span class="built_in">show</span>();</span><br><span class="line">    ui-&gt;restoreBtn-&gt;<span class="built_in">hide</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们可以利用QWidget的resizeEvent重载函数来实现这一需求：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">MainWindow::<span class="built_in">MainWindow</span>(QWidget *parent) : <span class="built_in">BaseWidget</span>(parent), <span class="built_in">ui</span>(<span class="keyword">new</span> Ui::MainWindow) &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="built_in">connect</span>(ui-&gt;maxBtn, &amp;QPushButton::clicked, <span class="keyword">this</span>, &amp;MainWindow::showMaximized);</span><br><span class="line">    <span class="built_in">connect</span>(ui-&gt;restoreBtn, &amp;QPushButton::clicked, <span class="keyword">this</span>, &amp;MainWindow::showNormal);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">MainWindow::resizeEvent</span><span class="params">(QResizeEvent *ev)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">Q_UNUSED</span>(ev)</span><br><span class="line">    ui-&gt;maxBtn-&gt;<span class="built_in">setHidden</span>(<span class="built_in">isMaximized</span>());</span><br><span class="line">    ui-&gt;restoreBtn-&gt;<span class="built_in">setHidden</span>(!<span class="built_in">isMaximized</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>另外最大化时，窗口阴影一般要关闭，也可以在这里处理。</p>
-<h3 id="2-4-可拖动"><a href="#2-4-可拖动" class="headerlink" title="2.4 可拖动"></a>2.4 可拖动</h3><p>按住窗口拖动这个需求可以通过mousePressEvent、mouseMoveEvent和mouseReleaseEvent这三个重载函数实现：</p>
-<ul>
-<li><p>定义一个QPoint类型成员变量m_pos，在鼠标按下时（mousePressEvent）记录点击坐标，并设置按下状态为true</p>
-</li>
-<li><p>鼠标移动时（mouseMoveEvent），计算移动距离，用move设置窗口位置</p>
-</li>
-<li><p>鼠标松开时（mouseReleaseEvent），取消按下状态</p>
-</li>
-</ul>
-<p>这一部分比较通用，我们写在BaseWidget里：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// basewidget.h</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BaseWidget</span> : <span class="keyword">public</span> QWidget &#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">BaseWidget</span><span class="params">(QWidget *parent = <span class="literal">nullptr</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">mousePressEvent</span><span class="params">(QMouseEvent *ev)</span> <span class="keyword">override</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">mouseMoveEvent</span><span class="params">(QMouseEvent *ev)</span> <span class="keyword">override</span></span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">mouseReleaseEvent</span><span class="params">(QMouseEvent *ev)</span> <span class="keyword">override</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    QPoint m_pos;</span><br><span class="line">    <span class="type">bool</span> m_pressed = <span class="literal">false</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// basewidget.cpp</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">BaseWidget::mousePressEvent</span><span class="params">(QMouseEvent* ev)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ((Qt::LeftButton == ev-&gt;<span class="built_in">button</span>()) &amp;&amp; (!<span class="built_in">isMaximized</span>())) &#123;</span><br><span class="line">        m_pressed = <span class="literal">true</span>;</span><br><span class="line">        m_pos = ev-&gt;<span class="built_in">pos</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    QWidget::<span class="built_in">mousePressEvent</span>(ev);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">BaseWidget::mouseMoveEvent</span><span class="params">(QMouseEvent* ev)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (m_pressed) &#123;</span><br><span class="line">        <span class="built_in">move</span>(ev-&gt;<span class="built_in">pos</span>() - m_pos + <span class="built_in">pos</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    QWidget::<span class="built_in">mouseMoveEvent</span>(ev);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">BaseWidget::mouseReleaseEvent</span><span class="params">(QMouseEvent* ev)</span> </span>&#123;</span><br><span class="line">    m_pressed = <span class="literal">false</span>;</span><br><span class="line">    QWidget::<span class="built_in">mouseReleaseEvent</span>(ev);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<p>PS: 代码已经开源在github：<a target="_blank" rel="noopener" href="https://github.com/linqiaqun/music-player">linqiaqun&#x2F;music-player: A cross platform music player (github.com)</a> 欢迎star&#x2F;fork&#x2F;issue</p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/Qt6/">Qt6</a><a href="/tags/跨平台/">跨平台</a><a href="/tags/音乐播放器/">音乐播放器</a><a href="/tags/QMultiMedia/">QMultiMedia</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-  <article>
-
-  
-    
-    <h3 class="article-title"><a href="/2024/06/17/Github-pages-+-Hexo搭建个人博客网站/"><span>Github Pages + Hexo搭建个人博客网站</span></a></h3>
-    
-  
-
-  <div class="article-top-meta">
-    <span class="posted-on">
-      <a href="/2024/06/17/Github-pages-+-Hexo搭建个人博客网站/" rel="bookmark">
-        <time class="entry-date published" datetime="2024-06-17T06:46:41.849Z">
-          2024-06-17
-        </time>
-      </a>
-    </span>
-  </div>
-
-
-  
-
-  <div class="article-content">
-    <div class="entry">
-      
-        <h2 id="1-环境和数据"><a href="#1-环境和数据" class="headerlink" title="1 环境和数据"></a>1 环境和数据</h2><ul>
-<li>win11</li>
-<li>github账号</li>
-<li>node.js安装包</li>
-</ul>
-<h2 id="2-搭建网站"><a href="#2-搭建网站" class="headerlink" title="2 搭建网站"></a>2 搭建网站</h2><h3 id="2-1-创建Repository"><a href="#2-1-创建Repository" class="headerlink" title="2.1 创建Repository"></a>2.1 创建Repository</h3><p>创建一个Repository，Repository name需要使用 username.github.io 这种格式，比如github用户名是test01，那Repository name就是test01.github.io。其它配置使用默认的即可，点击确定。</p>
-<p><img src="https://raw.githubusercontent.com/linqiaqun/images/main/202406171511219.png"></p>
-<h2 id="2-2-创建index-html文件"><a href="#2-2-创建index-html文件" class="headerlink" title="2.2 创建index.html文件"></a>2.2 创建index.html文件</h2><p>在repository根目录创建一个index.html文件（在页面创建或者本地push都行），内容可以先简单写一点：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>hello world<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="2-3-配置Github-Pages"><a href="#2-3-配置Github-Pages" class="headerlink" title="2.3 配置Github Pages"></a>2.3 配置Github Pages</h2><p>打开Repository（test01.github.io）的Settings页面：</p>
-<p><img src="https://raw.githubusercontent.com/linqiaqun/images/main/202406171535083.png"></p>
-<p>点击左侧的Pages按钮，配置Souce和Branch这两项，点击Save按钮，几分钟之后刷新页面，就可以看到访问链接出现了：</p>
-<p><img src="https://raw.githubusercontent.com/linqiaqun/images/main/202406171535085.png"></p>
-<p>也可以在几分钟后直接访问 <a target="_blank" rel="noopener" href="https://test01.github.io/">https://test01.github.io</a> 这个链接，如果访问正常，那这个博客网站就算建好了，接下来就是使用jekyll美化页面了。</p>
-<h1 id="3-使用Hexo编写页面"><a href="#3-使用Hexo编写页面" class="headerlink" title="3 使用Hexo编写页面"></a>3 使用Hexo编写页面</h1><h2 id="3-1-搭建Hexo环境"><a href="#3-1-搭建Hexo环境" class="headerlink" title="3.1 搭建Hexo环境"></a>3.1 搭建Hexo环境</h2><p>先安装node.js，<a target="_blank" rel="noopener" href="https://nodejs.cn/download/">下载 | Node.js 中文网 (nodejs.cn)</a> 下载安装包，安装完检查：</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node <span class="literal">-v</span></span><br></pre></td></tr></table></figure>
-
-<p>再安装hexo：</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install <span class="literal">-g</span> hexo</span><br></pre></td></tr></table></figure>
-
-<p>如果网络不行，可以先安装cnpm，再用cnpm装hexo，安装完照例检查：</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo <span class="literal">-v</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="3-2-创建hexo项目"><a href="#3-2-创建hexo项目" class="headerlink" title="3.2 创建hexo项目"></a>3.2 创建hexo项目</h2><p>初始化项目（test01可以换成自己想要的名称）</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init test01</span><br></pre></td></tr></table></figure>
-
-<p>安装依赖</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> test01</span><br><span class="line">npm i</span><br></pre></td></tr></table></figure>
-
-<p>生成静态文件</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br></pre></td></tr></table></figure>
-
-<p>本地运行预览</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br></pre></td></tr></table></figure>
-
-<h2 id="3-3-部署到Github-Pages"><a href="#3-3-部署到Github-Pages" class="headerlink" title="3.3 部署到Github Pages"></a>3.3 部署到Github Pages</h2><p>在项目根目录下安装 <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo-deployer-git">hexo-deployer-git</a></p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo<span class="literal">-deployer-git</span> <span class="literal">--save</span></span><br></pre></td></tr></table></figure>
-
-<p>修改根目录下的_config.yml文件，在deploy这节配置github信息：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">https://github.com/test01/test01.github.io</span></span><br><span class="line">  <span class="comment"># example, https://github.com/hexojs/hexojs.github.io</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">main</span></span><br></pre></td></tr></table></figure>
-
-<p>部署：</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>过一会儿访问 <a target="_blank" rel="noopener" href="https://test01.github.io/">https://test01.github.io</a> 就可以看到新页面了。</p>
-<h1 id="4-编写文章"><a href="#4-编写文章" class="headerlink" title="4 编写文章"></a>4 编写文章</h1><p>hexo默认支持markdown和ejs，其它格式需要安装对应的插件。将写好的文章放到source&#x2F;_posts，部署之后就会自动渲染了。</p>
-<h1 id="5-更换主题"><a href="#5-更换主题" class="headerlink" title="5 更换主题"></a>5 更换主题</h1><p>hexo更换主题比较简单，将下载的主题目录放到themes目录下，然后需要_config.yml文件，将theme字段修改为下载的主题即可。</p>
-<h1 id="6-参考"><a href="#6-参考" class="headerlink" title="6 参考"></a>6 参考</h1><p><a target="_blank" rel="noopener" href="https://docs.github.com/zh/pages">GitHub Pages 文档 - GitHub 文档</a></p>
-<p><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/github-pages">在 GitHub Pages 上部署 Hexo | Hexo</a></p>
-<p><a target="_blank" rel="noopener" href="https://hexo.nodejs.cn/">Hexo 中文网 (nodejs.cn)</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.lixiaomu.fun/posts/43857/">Hexo 10款好看的主题｜新手建站必备！ | 李小沐 (lixiaomu.fun)</a></p>
-
-      
-    </div>
-
-  </div>
-
-  <div class="article-footer">
-    <div class="article-meta pull-left">
-
-    
-
-    
-    
-
-    <span class="post-tags">
-      <i class="icon-tags"></i>
-        <a href="/tags/Github-Pages/">Github Pages</a><a href="/tags/Hexo/">Hexo</a><a href="/tags/博客/">博客</a>
-    </span>
-    
-
-    </div>
-
-    
-  </div>
-</article>
-
-
-
-
-<nav class="pagination">
-  
-  
-</nav>
-    </main>
-
-    <footer class="site-footer">
-  <p class="site-info">
-    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
-    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
-    </br>
-    
-    &copy; 2024 Lin Qiaqun
-    
-  </p>
-</footer>
-    
-    
   </div>
 </div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Lin Qiaqun</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://linqiaqun.github.io/2024/06/24/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8%EF%BC%88%E4%BA%8C%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Lin Qiaqun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lin Qiaqun's blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Lin Qiaqun's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/06/24/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8%EF%BC%88%E4%BA%8C%EF%BC%89/" class="post-title-link" itemprop="url">Qt6开发跨平台音乐播放器（二）：单例模式</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-06-24 14:43:00 / Modified: 17:25:59" itemprop="dateCreated datePublished" datetime="2024-06-24T14:43:00+08:00">2024-06-24</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>Qt6开发跨平台音乐播放器教程</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/06/24/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8%EF%BC%88%E4%BA%8C%EF%BC%89/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://linqiaqun.github.io/2024/06/20/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8%EF%BC%88%E4%B8%89%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Lin Qiaqun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lin Qiaqun's blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Lin Qiaqun's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/06/20/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8%EF%BC%88%E4%B8%89%EF%BC%89/" class="post-title-link" itemprop="url">Qt6开发跨平台音乐播放器（三）：Player</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-06-20 11:06:04" itemprop="dateCreated datePublished" datetime="2024-06-20T11:06:04+08:00">2024-06-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-06-24 14:42:20" itemprop="dateModified" datetime="2024-06-24T14:42:20+08:00">2024-06-24</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>Qt6开发跨平台音乐播放器教程</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/06/20/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8%EF%BC%88%E4%B8%89%EF%BC%89/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://linqiaqun.github.io/2024/06/17/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8%EF%BC%88%E4%B8%80%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Lin Qiaqun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lin Qiaqun's blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Lin Qiaqun's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/06/17/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8%EF%BC%88%E4%B8%80%EF%BC%89/" class="post-title-link" itemprop="url">Qt6开发跨平台音乐播放器（一）：基本窗口</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-06-17 17:38:39" itemprop="dateCreated datePublished" datetime="2024-06-17T17:38:39+08:00">2024-06-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-06-20 11:01:27" itemprop="dateModified" datetime="2024-06-20T11:01:27+08:00">2024-06-20</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>Qt6开发跨平台音乐播放器教程</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/06/17/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8/Qt6%E5%BC%80%E5%8F%91%E8%B7%A8%E5%B9%B3%E5%8F%B0%E9%9F%B3%E4%B9%90%E6%92%AD%E6%94%BE%E5%99%A8%EF%BC%88%E4%B8%80%EF%BC%89/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://linqiaqun.github.io/2024/06/17/Github-pages-+-Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Lin Qiaqun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Lin Qiaqun's blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Lin Qiaqun's blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/06/17/Github-pages-+-Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/" class="post-title-link" itemprop="url">Github Pages + Hexo搭建个人博客网站</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2024-06-17 14:46:41 / Modified: 16:38:41" itemprop="dateCreated datePublished" datetime="2024-06-17T14:46:41+08:00">2024-06-17</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>Github Pages搭建教程</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/06/17/Github-pages-+-Hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E7%BD%91%E7%AB%99/">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Lin Qiaqun</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
 </body>
 </html>
