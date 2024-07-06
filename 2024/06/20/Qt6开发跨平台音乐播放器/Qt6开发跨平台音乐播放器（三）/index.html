@@ -27,7 +27,7 @@
 <meta property="og:description" content="Qt6开发跨平台音乐播放器教程">
 <meta property="og:locale">
 <meta property="article:published_time" content="2024-06-20T03:06:04.624Z">
-<meta property="article:modified_time" content="2024-06-25T09:57:03.503Z">
+<meta property="article:modified_time" content="2024-06-27T02:15:48.369Z">
 <meta property="article:author" content="Lin Qiaqun">
 <meta property="article:tag" content="Qt6">
 <meta property="article:tag" content="跨平台">
@@ -124,12 +124,12 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">23</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
@@ -192,7 +192,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2024-06-25 17:57:03" itemprop="dateModified" datetime="2024-06-25T17:57:03+08:00">2024-06-25</time>
+      <time title="Modified: 2024-06-27 10:15:48" itemprop="dateModified" datetime="2024-06-27T10:15:48+08:00">2024-06-27</time>
     </span>
 
   
@@ -229,6 +229,9 @@
 
 <p>在player.pri中添加multimedia模块：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">QT += multimedia</span><br></pre></td></tr></table></figure>
+
+<p>Qt6对multimedia模块进行了大幅修改，与Qt5相比有巨大的不同（参考<a target="_blank" rel="noopener" href="https://doc.qt.io/qt-6/qtmultimedia-changes-qt6.html">Changes to Qt Multimedia | Qt Multimedia 6.7.2</a>），我们的代码Qt6以上才能编译，可以在pri文件中加入限制：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">lessThan</span>(QT_MAJOR_VERSION, <span class="number">6</span>): <span class="built_in">error</span>(<span class="string">&quot;The minimum supported version is QT6&quot;</span>)</span><br></pre></td></tr></table></figure>
 
 <h3 id="2-1-播放控制"><a href="#2-1-播放控制" class="headerlink" title="2.1 播放控制"></a>2.1 播放控制</h3><p>创建一个QMediaPlayer对象：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// player.h</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">QMediaPlayer</span>;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Player</span> : <span class="keyword">public</span> QObject &#123;</span><br><span class="line">...</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    QMediaPlayer *m_player = <span class="literal">nullptr</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// player.cpp</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;player.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QMediaPlayer&gt;</span></span></span><br><span class="line"></span><br><span class="line">Player::<span class="built_in">Player</span>(QObject *parent) : QObject&#123;parent&#125; &#123;</span><br><span class="line">    m_player = <span class="keyword">new</span> <span class="built_in">QMediaPlayer</span>(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
